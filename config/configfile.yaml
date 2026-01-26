@@ -5,10 +5,10 @@
 ## STARTING POINT
 # The path to the sample sheet (TSV format) that contains the sample information.
 # The sample sheet should contain the following columns: SampleID, Fastq1, Fastq2, Group, and Condition.
-samples: "config/samples.tsv"
+samples: "/lustre/BIF/nobackup/he068/Tools/orochi/config/tinto.tsv"
 
 # The path to the output directory.
-outdir: "/path/to/output"
+outdir: "/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/orochi"
 
 # The path to the temporary directory.
 tmpdir: "/tmp"
@@ -30,7 +30,7 @@ min_qual: 30
 min_length: 150
 
 # host_removal: Default: True. If True, host removal will be performed.
-host_removal: True
+host_removal: False
 
 # host_genome: The path to the host genome.
 host_genome: "resources/data/reference/beta-vulgaris-subset.fasta"
@@ -51,7 +51,7 @@ assembly_method: coassembly
 normalize_reads: "Yes"
 
 # sample_pooling: The sample pooling method to use. Options: supervised, unsupervised, no.
-sample_pooling: supervised
+sample_pooling: no
 
 # clustering: Chosen number of clusters. Only active if UNSUPERVISED sample pooling chosen. Type "0" if number of clusters should be calculated based on data.
 clustering: 0
@@ -67,7 +67,7 @@ megahit_mem: '0.9'
 kmers: "27,37,47,57,67,77,87"
 
 # Phyloflash database path
-phyloflash_db: "/path/to/phyloflash/database"
+phyloflash_db: "/lustre/BIF/nobackup/he068/Database/138.2"
 
 
 ## ANNOTATIONS
@@ -77,21 +77,21 @@ min_contig_length: 1000
 
 ## FUNCTIONAL ANNOTATION
 # emapper_database: The path to the eggNOG database.
-emapper_database: "/path/to/emapper/database"
+emapper_database: "/lustre/BIF/nobackup/he068/Database/eggnog"
 
 # min_contig_antismash: The minimum length of the contigs for antiSMASH analysis.
 min_contig_antismash: 5000
 
 # antismash_db: The path to the antiSMASH database.
-antismash_db: "/path/to/antismash/database"
+antismash_db: "/lustre/BIF/nobackup/he068/miniforge3/envs/antismash/lib/python3.11/site-packages/antismash/databases"
 
 
 ## TAXONOMIC ANNOTATION
 # CAT_database: The path to the CAT database.
-CAT_database: "/path/to/CAT/db"
+CAT_database: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb/db"
 
 # CAT_taxonomy: The path to the CAT taxonomy files
-CAT_taxonomy: "/path/to/CAT/tax"
+CAT_taxonomy: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb/tax"
 
 # CheckM2 database path
-checkm_db: "/path/to/database/CheckM2_database/uniref100.KO.1.dmnd"
+checkm_db: "/lustre/BIF/nobackup/he068/Database/CheckM2_database/uniref100.KO.1.dmnd"

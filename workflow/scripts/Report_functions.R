@@ -44,10 +44,11 @@ rsc_path <- file.path(outdir, "results/09_plots/rsc")
 # Access input file
 mpse <- mp_import_metaphlan(profile = metaphlan_secondary)
 
-# Including TREATMENT information (in my case, treatment1)
+# Including TREATMENT information (in my case, depth)
 sample_groups <- read.table(samples, header = TRUE)
 colnames(sample_groups)[1] <- "Sample"
-sample_groups <- sample_groups[,c(1,2)]
+# sample_groups <- sample_groups[,c(1,2)]
+sample_groups <- sample_groups[, c("Sample", "depth")]
 mpse3 <- mpse %>%
   left_join(sample_groups, by = "Sample")
 
@@ -61,13 +62,13 @@ mpse3 %<>%
   mp_cal_abundance( # for each group 
     .abundance=Abundance,
     #.group=sample_pool,
-    .group=treatment1,
+    .group=depth,
     force = TRUE
   )
 
-# Filter out samples with missing or invalid treatment1 before plotting ## MAKE IT AS FOR treatment2 AS WELL
+# Filter out samples with missing or invalid depth before plotting ## MAKE IT AS FOR treatment2 AS WELL
 mpse3 <- mpse3 %>%
-filter(!is.na(treatment1) & treatment1 != "")
+filter(!is.na(depth) & depth != "")
 
 # Observed and Shannon (per sample)
 mpse3 %<>% mp_cal_alpha(.abundance=Abundance, force=TRUE) 
@@ -75,7 +76,7 @@ f1 <- mpse3 %>% mp_plot_alpha(.alpha=c(Observe, Shannon))
 f1 <- f1 + theme_bw() + labs(title = "Alpha Diversity by Sample") + theme(plot.title = element_text(hjust = 0.5))
 
 # Observed and Shannon (per group)
-f2 <- mpse3 %>% mp_plot_alpha(.group=treatment1, .alpha=c(Observe, Shannon))
+f2 <- mpse3 %>% mp_plot_alpha(.group=depth, .alpha=c(Observe, Shannon))
 f2 <- f2 + theme_bw() + labs(title = "Alpha Diversity by Treatment") + theme(plot.title = element_text(hjust = 0.5))
 f3 <- f1 / f2
 
@@ -100,7 +101,7 @@ for (level in taxa_levels) {
     mp_plot_abundance(
       .abundance = Abundance,
       #.group = sample_pool,
-      .group = treatment1,
+      .group = depth,
       taxa.class = !!sym(level),  # dynamically use level
       topn = 20,
       relative = FALSE,
@@ -141,7 +142,7 @@ for (level in taxa_levels) {
   h1 <- mpse3 %>%
     mp_plot_abundance(
       .abundance = Abundance,
-      .group = treatment1,
+      .group = depth,
       taxa.class = !!sym(level),
       relative = TRUE,
       topn = 20,
@@ -184,14 +185,14 @@ average_taxa_plots_heatmap <- list()
 for (level in taxa_levels) {
   # Collapse to mean abundance per Family per treatment
   collapsed_family <- mpse3 %>%
-    group_by(!!sym(level), treatment1, Sample) %>%
+    group_by(!!sym(level), depth, Sample) %>%
     summarise(taxon_abund = sum(RelAbundanceBySample), .groups = "drop") %>%
-    group_by(!!sym(level), treatment1) %>%
+    group_by(!!sym(level), depth) %>%
     summarise(mean_abund = mean(taxon_abund), .groups = "drop")
   
   # Reshape: wide format (rows = Family, cols = treatment, values = abundance)
   mat <- collapsed_family %>%
-    pivot_wider(names_from = treatment1, values_from = mean_abund, values_fill = 0) %>%
+    pivot_wider(names_from = depth, values_from = mean_abund, values_fill = 0) %>%
     as.data.frame()
   rownames(mat) <- mat[,1]
   mat[,1] <- NULL
@@ -281,7 +282,7 @@ mpse3 %<>%
   mp_decostand(.abundance=Abundance)
 
 ## Significance between pools
-b3 <- mpse3 %>% mp_cal_dist(.abundance=hellinger, distmethod="bray") %>% mp_plot_dist(.distmethod = bray, .group = treatment1, group.test=TRUE, textsize=2)
+b3 <- mpse3 %>% mp_cal_dist(.abundance=hellinger, distmethod="bray") %>% mp_plot_dist(.distmethod = bray, .group = depth, group.test=TRUE, textsize=2)
 
 ggplot2::ggsave(filename = file.path(outdir, plotsdir, "4-significance_between_pools.tiff"), plot = b3, width = 6, height = 5, units = "in", dpi = 500, compression = "lzw")
 
@@ -311,8 +312,8 @@ mpse3 %<>% mp_cal_pcoa(.abundance=hellinger, distmethod="bray", .dim = 2)
 pcoa2 <- mpse3 %>% 
   mp_plot_ord(
     .ord = pcoa, 
-    .group = treatment1, 
-    .color = treatment1, 
+    .group = depth, 
+    .color = depth, 
     .size = 4,
     .alpha = 0.8,
     ellipse = TRUE,
@@ -342,7 +343,7 @@ mpse3 %<>%
 sample.clust <- mpse3 %>% mp_extract_internal_attr(name='SampleClust')
 
 p <- ggtree(sample.clust) + 
-  geom_tippoint(aes(color=treatment1), size = 8) +
+  geom_tippoint(aes(color=depth), size = 8) +
   geom_tiplab(as_ylab = TRUE, size = 14) +
   ggplot2::scale_x_continuous(expand=c(0, 0.01))
 
