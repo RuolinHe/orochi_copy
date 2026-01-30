@@ -1,4 +1,11 @@
 # Rule to test the unfinished pipeline
+import os
+from pathlib import Path
+
+def get_drep_genomes(wildcards):
+    ckpt = checkpoints.dereplicate_bins.get(**wildcards)
+    drep_dir = Path(ckpt.output.dereplicated_bins)
+    return sorted(drep_dir.glob("*.fa"))
 
 rule downstream_test:
     input:
@@ -26,7 +33,12 @@ rule downstream_test:
         f"{outdir}/results/06_binning/BAT/{{sample_pool}}/{{sample_pool}}_BAT.done",
         f"{outdir}/results/08_plots/{{sample_pool}}/{{sample_pool}}_krona.html",
         f"{outdir}/results/08_plots/{{sample_pool}}/{{sample_pool}}_bins_scatterplot.html",
-        f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/index.html",
+        # f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/index.html",
+        expand(
+            f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/{{genome}}/.antismash.done",
+            sample_pool=samples["sample_pool"],
+            genome=lambda wc: get_drep_genomes(wc)
+        ),
         f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/fungal/index.html",
         # f"{outdir}/results/06_binning/BAT/{{sample_pool}}/{{sample_pool}}.bin2classification.names.txt"
         #f"{outdir}/results/08_plots/{{sample_pool}}/{{sample_pool}}_bins_scatterplot.html",

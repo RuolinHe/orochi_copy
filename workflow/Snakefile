@@ -1,6 +1,11 @@
 import pandas as pd
 import os
+from pathlib import Path
 
+def get_drep_genomes(wildcards):
+    ckpt = checkpoints.dereplicate_bins.get(**wildcards)
+    drep_dir = Path(ckpt.output.dereplicated_bins)
+    return sorted([p.stem for p in drep_dir.glob("*.fa")])
 
 if os.path.isfile("config/configfile.yaml"):
     configfile: "config/configfile.yaml"
@@ -14,6 +19,7 @@ samples = (
 
 outdir = config["outdir"]
 minsize = config["min_contig_length"]
+anti_minsize = config["min_contig_antismash"]
 
 # # Dynamically load all modules/rules
 # smks = list(listfiles('rules/core/{section}/{part}.smk'))

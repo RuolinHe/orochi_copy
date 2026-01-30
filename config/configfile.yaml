@@ -8,7 +8,7 @@
 samples: "/lustre/BIF/nobackup/he068/Tools/orochi/config/tinto.tsv"
 
 # The path to the output directory.
-outdir: "/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/orochi"
+outdir: "/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/orochi1"
 
 # The path to the temporary directory.
 tmpdir: "/tmp"
@@ -67,7 +67,7 @@ megahit_mem: '0.9'
 kmers: "27,37,47,57,67,77,87"
 
 # Phyloflash database path
-phyloflash_db: "/lustre/BIF/nobackup/he068/Database/138.2"
+phyloflash_db: "/lustre/BIF/nobackup/he068/Database/phyloflash_db_v138.2"
 
 
 ## ANNOTATIONS
@@ -77,7 +77,7 @@ min_contig_length: 1000
 
 ## FUNCTIONAL ANNOTATION
 # emapper_database: The path to the eggNOG database.
-emapper_database: "/lustre/BIF/nobackup/he068/Database/eggnog"
+emapper_database: "/lustre/BIF/nobackup/he068/Database/eggnog_v5.0.2"
 
 # min_contig_antismash: The minimum length of the contigs for antiSMASH analysis.
 min_contig_antismash: 5000
@@ -87,11 +87,14 @@ antismash_db: "/lustre/BIF/nobackup/he068/miniforge3/envs/antismash/lib/python3.
 
 
 ## TAXONOMIC ANNOTATION
-# CAT_database: The path to the CAT database.
-CAT_database: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb/db"
+# CAT_database: The path to the CAT database. Match to chosen taxonomy_type (GTDB/NCBI)
+CAT_database: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb_v226/db"
 
-# CAT_taxonomy: The path to the CAT taxonomy files
-CAT_taxonomy: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb/tax"
+# CAT_taxonomy: The path to the CAT taxonomy files. Match to chosen taxonomy_type (GTDB/NCBI)
+CAT_taxonomy: "/lustre/BIF/nobackup/he068/Database/20260122_CAT_gtdb_v226/tax"
 
-# CheckM2 database path
-checkm_db: "/lustre/BIF/nobackup/he068/Database/CheckM2_database/uniref100.KO.1.dmnd"
+# taxonomy_type: GTDB/NCBI. NOTICE!!! CAT related databases need to match this choice.
+taxonomy_type: GTDB
+
+# CheckM2 database path. CheckM2 database v3 from https://zenodo.org/records/14897628
+checkm_db: "/lustre/BIF/nobackup/he068/Database/CheckM2_database_v3/uniref100.KO.1.dmnd"

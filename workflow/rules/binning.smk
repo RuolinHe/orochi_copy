@@ -317,8 +317,10 @@ checkpoint dereplicate_bins:
         "../envs/drep.yaml"
     shell:
         """
-        if [ $(echo "{input.input_file}" | tr ' ' '\n' | wc -l) -gt 1 ]; then
-            dRep dereplicate {params.drep_output} -g {input.input_file} -p {threads} --genomeInfo {input.combined_info}
+        if [ $(wc -l < {input.input_file}) -gt 1 ]; then
+    #        dRep dereplicate {params.drep_output} -g {input.input_file} -p {threads} --genomeInfo {input.combined_info}
+    # Count of MAGs is low. skip primary clustering. completeness is more than 50%, contamination is less than 10%
+            dRep dereplicate {params.drep_output} -g {input.input_file} -p {threads} --genomeInfo {input.combined_info} -comp 50 -con 10 --S_algorithm fastANI --SkipMash
         else
             mkdir -p {output.dereplicated_bins}
             cp $(cat {input.input_file}) {output.dereplicated_bins}/

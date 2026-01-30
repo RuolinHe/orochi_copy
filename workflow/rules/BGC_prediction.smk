@@ -2,27 +2,67 @@
 
 rule antismash:
     input:
-        gff=f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{minsize}.gff",
-        # gff=f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_genes.gff",
-        contigs=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample_pool}}/prokaryotes.fasta"
-
+        derep_ok = ancient(f"{outdir}/results/06_binning/drep/dereplicated_genomes/drep.done"),
+        contigs = lambda wc: f"{outdir}/results/06_binning/drep/dereplicated_genomes/{wc.genome}.fa",
+        gff = f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{anti_minsize}.gff"
     output:
-        html=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/index.html",
-        json=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/bacterial.json"
+        done = touch(f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/{{genome}}/.antismash.done")
+    params:
+        outdir = f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/{{genome}}",
+        threads = config["threads"],
+        database_dir = config["antismash_db"],
+    threads: config["threads"]
     conda:
         "../envs/antismash.yaml"
-    params:
-        outdir=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial",
-        threads=config['threads'],
-        database_dir=config['antismash_db']
-
     shell:
-        "antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
-        --taxon bacteria --output-basename bacterial --cc-mibig --cb-general --cb-knownclusters --databases {params.database_dir}"
+        """
+        antismash {input.contigs} \
+          -c {threads} \
+          --genefinding-gff3 {input.gff} \
+          --genefinding-tool none \
+          --output-dir {params.outdir} \
+          --taxon bacteria \
+          --cc-mibig \
+          --cb-knownclusters \
+          --databases {params.database_dir} \
+          --asf \
+          --clusterhmmer \
+          --tfbs \
+          --rre \
+          --allow-long-headers \
+          --no-zip-output \
+          --genefinding-tool none
+        """
+#    input:
+#        gff=f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{anti_minsize}.gff",
+#        contigs=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample_pool}}/prokaryotes.fasta"
+#
+#    output:
+#        html=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/index.html",
+#        json=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/bacterial.json"
+#    conda:
+#        "../envs/antismash.yaml"
+#    params:
+#        outdir=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial",
+#        threads=config['threads'],
+#        database_dir=config['antismash_db']
+#
+#    shell:
+#        "antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
+#        --taxon bacteria --output-basename bacterial --cc-mibig --cb-knownclusters --databases {params.database_dir} \
+#        --asf --clusterhmmer --tfbs --rre --allow-long-headers --no-zip-output --genefinding-tool none"
+
+rule antismash_all:
+    input:
+        lambda wc: expand(
+            f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/{{genome}}/.antismash.done",
+            sample_pool = wc.sample_pool,
+            genome = get_drep_genomes(wc)
+        )
 
 rule fungismash:
     input:
-        gff=f"{outdir}/results/04_gene_prediction/augustify/{{sample_pool}}/{{sample_pool}}_eukproteins.gff",
+        gff=f"{outdir}/results/04_gene_prediction/augustify/{{sample_pool}}/{{sample_pool}}_eukproteins_{anti_minsize}.gff",
         contigs=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample_pool}}/eukaryotes.fasta"
 
     output:
@@ -37,7 +77,8 @@ rule fungismash:
 
     shell:
         "antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
-        --taxon fungi --cassis --output-basename fungal --cc-mibig --cb-general --cb-knownclusters --databases {params.database_dir}"
+        --taxon fungi --cassis --output-basename fungal --cc-mibig --cb-knownclusters --databases {params.database_dir} \
+        --asf --clusterhmmer --tfbs --rre --allow-long-headers --no-zip-output --genefinding-tool none"
 
 rule bigscape:
     input:

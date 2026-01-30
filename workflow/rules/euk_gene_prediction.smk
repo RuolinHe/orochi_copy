@@ -62,12 +62,27 @@ rule filter_prokaryote_gff:
         gff=f"{outdir}/results/04_gene_prediction/prodigal/{{sample}}/{{sample}}_genes.gff",
         headers_prok=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample}}/prokaryote_contig_headers.txt"
     output:
-        f"{outdir}/results/04_gene_prediction/prodigal/{{sample}}/{{sample}}_prokaryote_{minsize}.gff"
+        f"{outdir}/results/04_gene_prediction/prodigal/{{sample}}/{{sample}}_prokaryote_{anti_minsize}.gff"
     conda:
         "../envs/size_filter.yaml"
     params:
-        size=config['min_contig_length'],
+        size=config['min_contig_antismash'],
         outdir=f"{outdir}/results/04_gene_prediction/prodigal/{{sample}}",
         script=os.path.abspath("workflow/scripts/filter_annotations.py")
     shell:
-        "python {params.script} --gff {input.gff} --headerfile {input.headers_prok} --outdir {params.outdir} --minsize {params.size} --sample_name {wildcards.sample}"
+        "python {params.script} --gff {input.gff} --headerfile {input.headers_prok} --outdir {params.outdir} --minsize {params.size} --sample_name {wildcards.sample} --karyote_type prokaryote"
+
+rule filter_eukaryote_gff:
+    input:
+        gff=f"{outdir}/results/04_gene_prediction/augustify/{{sample}}/{{sample}}_eukproteins.gff",
+        headers_prok=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample}}/eukaryote_contig_headers.txt"
+    output:
+        f"{outdir}/results/04_gene_prediction/augustify/{{sample}}/{{sample}}_eukproteins_{anti_minsize}.gff",
+    conda:
+        "../envs/size_filter.yaml"
+    params:
+        size=config['min_contig_antismash'],
+        outdir=f"{outdir}/results/04_gene_prediction/prodigal/{{sample}}",
+        script=os.path.abspath("workflow/scripts/filter_annotations.py")
+    shell:
+        "python {params.script} --gff {input.gff} --headerfile {input.headers_prok} --outdir {params.outdir} --minsize {params.size} --sample_name {wildcards.sample} --karyote_type eukproteins"

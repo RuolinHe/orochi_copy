@@ -1,5 +1,5 @@
 sample	fq1	fq2	sample_pool	depth
-10M	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/2metagCV10M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/2metagCV10M_2.fastq.gz	All	10M
-12M	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/3metagCV12M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/3metagCV12M_2.fastq.gz	All	12M
-13M	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/4metagCV13M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/4metagCV13M_2.fastq.gz	All	13M
-25M	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/5metagCV25M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/5metagCV25M_2.fastq.gz	All	25M
+10m	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/2metagCV10M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/2metagCV10M_2.fastq.gz	All	10m
+12m	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/3metagCV12M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/3metagCV12M_2.fastq.gz	All	12m
+13m	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/4metagCV13M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/4metagCV13M_2.fastq.gz	All	13m
+25m	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/5metagCV25M_1.fastq.gz	/lustre/BIF/nobackup/he068/Projects/0-EXPLORA/data/metaseq/5metagCV25M_2.fastq.gz	All	25m

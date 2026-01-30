@@ -1,9 +1,9 @@
-# Functions to filter annotations so only contigs that are prokaryotic are kept
+# Functions to filter annotations so only contigs that are prokaryotic or eukaryotic are kept
 import sys
 import os
 
 
-def filter_gff(gff, headerfile, outdir, size, sample_name):
+def filter_gff(gff, headerfile, outdir, size, sample_name, karyote_type):
     """
     Filter gff based on contig_headers.txt file.
     """
@@ -13,7 +13,7 @@ def filter_gff(gff, headerfile, outdir, size, sample_name):
     contig_headers_list = contig_headers.split("\n")  # list of all headers
     header_file.close()
 
-    gff_file = sample_name + "_" + "prokaryote" + "_" + str(size) + ".gff"
+    gff_file = sample_name + "_" + karyote_type + "_" + str(size) + ".gff"
 
     with open(gff, "r") as f:
         with open(os.path.join(outdir, gff_file), "w") as g:
@@ -33,6 +33,7 @@ if __name__ == "__main__":
     outdir = sys.argv[6]
     size = int(sys.argv[8])
     sample_name = sys.argv[10]
-
-    filter_gff(gff, header_file, outdir, size, sample_name)
+    karyote_type = sys.argv[12]
+    
+    filter_gff(gff, header_file, outdir, size, sample_name, karyote_type)
 
