@@ -16,6 +16,7 @@ rule antismash:
         "../envs/antismash.yaml"
     shell:
         """
+        rm -rf {params.outdir}
         antismash {input.contigs} \
           -c {threads} \
           --genefinding-gff3 {input.gff} \
@@ -33,24 +34,6 @@ rule antismash:
           --no-zip-output \
           --genefinding-tool none
         """
-#    input:
-#        gff=f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{anti_minsize}.gff",
-#        contigs=f"{outdir}/results/04_gene_prediction/whokaryote/{{sample_pool}}/prokaryotes.fasta"
-#
-#    output:
-#        html=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/index.html",
-#        json=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/bacterial.json"
-#    conda:
-#        "../envs/antismash.yaml"
-#    params:
-#        outdir=f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial",
-#        threads=config['threads'],
-#        database_dir=config['antismash_db']
-#
-#    shell:
-#        "antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
-#        --taxon bacteria --output-basename bacterial --cc-mibig --cb-knownclusters --databases {params.database_dir} \
-#        --asf --clusterhmmer --tfbs --rre --allow-long-headers --no-zip-output --genefinding-tool none"
 
 rule antismash_all:
     input:
@@ -76,9 +59,12 @@ rule fungismash:
         database_dir=config['antismash_db']
 
     shell:
-        "antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
+        """
+        rm -rf {params.outdir}
+        antismash {input.contigs} -c {params.threads} --genefinding-gff3 {input.gff} --output-dir {params.outdir} \
         --taxon fungi --cassis --output-basename fungal --cc-mibig --cb-knownclusters --databases {params.database_dir} \
-        --asf --clusterhmmer --tfbs --rre --allow-long-headers --no-zip-output --genefinding-tool none"
+        --asf --clusterhmmer --tfbs --rre --allow-long-headers --no-zip-output --genefinding-tool none
+        """
 
 rule bigscape:
     input:
