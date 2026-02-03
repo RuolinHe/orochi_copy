@@ -258,17 +258,36 @@ library(htmltools)
 scatter_files <- list.files(file.path(outdir, "results/08_plots"), pattern = "_bins_scatterplot\\.html$", 
                             full.names = TRUE, recursive = TRUE)
 
-# Build a list of HTML sections (title + embedded plot)
-plot_sections <- lapply(scatter_files, function(pf) {
-  tagList(
-    #h3(basename(pf)),
-    includeHTML(pf),
-    hr()  # adds a horizontal divider between plots
-  )
-})
+# # Build a list of HTML sections (title + embedded plot)
+# plot_sections <- lapply(scatter_files, function(pf) {
+#   tagList(
+#     #h3(basename(pf)),
+#     includeHTML(pf),
+#     hr()  # adds a horizontal divider between plots
+#   )
+# })
 
-# Combine and render them all
-browsable(tagList(plot_sections))
+# # Combine and render them all
+# browsable(tagList(plot_sections))
+if (length(scatter_files) == 0) {
+  cat("<p style='color: #e74c3c; font-weight:bold;'>Can't find any scatterplot HTML file</p>")
+} else {
+  
+  # For each plot, create a container with a title and fixed height.
+  plot_sections <- lapply(seq_along(scatter_files), function(i) {
+    file <- scatter_files[i]
+    title <- tools::file_path_sans_ext(basename(file))
+    
+    tagList(
+      h3(title, style = "margin-top: 1.5em; color: #2c3e50;"),
+      div(
+        style = "width:100%; height:700px; border:1px solid #ddd; border-radius:6px; overflow:hidden; background:#fff;",
+        includeHTML(file)
+      ),
+      hr(style = "margin: 2em 0; border-top: 1px solid #ccc;")
+    )
+  })
+}
 ```
 
 ```{r Bin Quality_pages, results='asis', warning=FALSE, message=FALSE, echo=FALSE}

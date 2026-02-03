@@ -1,10 +1,11 @@
 """ The rules related to Biosynthetic Gene Cluster (BGC) prediction and related analyses"""
 
 rule antismash:
+    # Sometime, MAG genomes can't matach the whole gff annotations. Run prodigal-m again in antismash for prokaryotic genoomes
     input:
         derep_ok = ancient(f"{outdir}/results/06_binning/drep/dereplicated_genomes/drep.done"),
         contigs = lambda wc: f"{outdir}/results/06_binning/drep/dereplicated_genomes/{wc.genome}.fa",
-        gff = f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{anti_minsize}.gff"
+        # gff = f"{outdir}/results/04_gene_prediction/prodigal/{{sample_pool}}/{{sample_pool}}_prokaryote_{anti_minsize}.gff"
     output:
         done = touch(f"{outdir}/results/08_BGC/antismash/{{sample_pool}}/bacterial/{{genome}}/.antismash.done")
     params:
@@ -19,8 +20,6 @@ rule antismash:
         rm -rf {params.outdir}
         antismash {input.contigs} \
           -c {threads} \
-          --genefinding-gff3 {input.gff} \
-          --genefinding-tool none \
           --output-dir {params.outdir} \
           --taxon bacteria \
           --cc-mibig \
@@ -32,7 +31,7 @@ rule antismash:
           --rre \
           --allow-long-headers \
           --no-zip-output \
-          --genefinding-tool none
+          --genefinding-tool prodigal-m
         """
 
 rule antismash_all:
